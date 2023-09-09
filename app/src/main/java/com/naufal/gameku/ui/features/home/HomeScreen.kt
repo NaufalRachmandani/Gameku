@@ -51,7 +51,7 @@ import com.naufal.gameku.ui.components.CustomOutlinedTextField
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.features.home.HomeViewModel
 import com.naufal.gameku.ui.theme.GamekuTheme
-import com.naufal.gameku.ui.util.toStringGenres
+import com.naufal.gameku.ui.util.gamesResponseToStringGenres
 import com.skydoves.landscapist.ImageOptions
 import kotlinx.coroutines.flow.flowOf
 
@@ -210,7 +210,7 @@ fun ItemGame(
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
             text = gameDetail.name ?: "-",
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
 
@@ -219,7 +219,7 @@ fun ItemGame(
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
             text = "Release Date: ${gameDetail.released ?: "-"}",
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
 
@@ -227,8 +227,8 @@ fun ItemGame(
 
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
-            text = "Genres: ${gameDetail.genres.toStringGenres()}",
-            style = MaterialTheme.typography.labelMedium,
+            text = "Genres: ${gameDetail.genres.gamesResponseToStringGenres()}",
+            style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
 

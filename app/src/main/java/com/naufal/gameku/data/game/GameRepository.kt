@@ -62,6 +62,19 @@ class GameRepository @Inject constructor(
         }
     }
 
+    suspend fun checkFavoriteGame(gameId: Int): AppResult<Flow<Boolean>> {
+        return try {
+            val result = gameDatabase.gameDao().checkFavoriteGame(gameId)
+            AppResult.OnSuccess(
+                flow { emit(result) }.flowOn(Dispatchers.IO)
+            )
+        } catch (e: Exception) {
+            AppResult.OnFailure(
+                message = e.message,
+            )
+        }
+    }
+
     suspend fun saveFavoriteGame(gameEntity: GameEntity): AppResult<Flow<Boolean>> {
         return try {
             gameDatabase.gameDao().saveGame(gameEntity)

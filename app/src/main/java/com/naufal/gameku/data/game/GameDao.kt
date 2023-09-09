@@ -15,6 +15,9 @@ interface GameDao {
     @Query("SELECT * FROM GameEntity")
     suspend fun getGames(): List<GameEntity>
 
+    @Query("SELECT EXISTS(SELECT * FROM GameEntity WHERE id = :gameId)")
+    suspend fun checkFavoriteGame(gameId: Int): Boolean
+
     @Query("DELETE FROM GameEntity WHERE id = :gameId")
     suspend fun deleteGame(gameId: Int)
 }

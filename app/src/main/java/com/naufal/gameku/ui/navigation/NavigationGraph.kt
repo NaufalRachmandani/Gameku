@@ -1,5 +1,6 @@
 package com.naufal.gameku.ui.navigation
 
+import GameDetailScreen
 import HomeScreen
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
@@ -19,7 +20,22 @@ fun GamekuGraph(navController: NavHostController) {
         startDestination = Screen.Home.route
     ) {
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                openGameDetail = {
+                    navController.navigate(Screen.GameDetail.createRoute(it))
+                }
+            )
+        }
+
+        composable(Screen.GameDetail.route) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("gameId")
+            requireNotNull(gameId) { "gameId parameter wasn't found. Please make sure it's set!" }
+            GameDetailScreen(
+                gameId = gameId.toInt(),
+                openHomeScreen = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }
@@ -27,7 +43,7 @@ fun GamekuGraph(navController: NavHostController) {
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object GameDetail : Screen("game_detail/{gameId}") {
-        fun createRoute(gameId: String) = "game_detail/$gameId"
+        fun createRoute(gameId: Int) = "game_detail/$gameId"
     }
     object Favorite : Screen("favorite")
 }

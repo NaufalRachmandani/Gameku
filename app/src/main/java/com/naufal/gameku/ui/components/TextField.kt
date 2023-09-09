@@ -7,6 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +38,7 @@ fun CustomOutlinedTextField(
     shape: Shape = RoundedCornerShape(6.dp),
     autoCorrect: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-//    textFieldColors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-//        focusedBorderColor = md_theme_light_primary,
-//        cursorColor = md_theme_light_primary,
-//        unfocusedBorderColor = md_theme_light_secondary,
-//        containerColor = md_theme_light_primaryContainer,
-//    ),
+    textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     keyboardCapitalization: KeyboardCapitalization = KeyboardCapitalization.None,
 ) {
     OutlinedTextField(
@@ -72,6 +69,7 @@ fun CustomOutlinedTextField(
         singleLine = singleLine,
         trailingIcon = trailingIcon,
         leadingIcon = leadingIcon,
+        colors = textFieldColors,
     )
 }
 

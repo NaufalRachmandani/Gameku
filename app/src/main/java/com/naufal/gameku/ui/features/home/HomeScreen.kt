@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,17 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -29,29 +27,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.naufal.gameku.data.game.model.response.GamesResponse
 import com.naufal.gameku.ui.components.CustomCoilImage
+import com.naufal.gameku.ui.components.CustomOutlinedTextField
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.features.home.HomeViewModel
 import com.naufal.gameku.ui.theme.GamekuTheme
 import com.naufal.gameku.ui.util.toStringGenres
 import com.skydoves.landscapist.ImageOptions
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun HomeScreen(
@@ -59,10 +61,14 @@ fun HomeScreen(
     openGameDetail: (Int) -> Unit = {},
     openFavoriteScreen: () -> Unit = {},
 ) {
-    val homeState by viewModel.homeState.collectAsState()
+    val gamePagingItems: LazyPagingItems<GamesResponse.Result> =
+        viewModel.gamesState.collectAsLazyPagingItems()
 
     HomeScreenContent(
-        homeState = homeState,
+        gamePagingItems = gamePagingItems,
+        onTextChanged = { text ->
+            viewModel.getGames(text)
+        },
         openGameDetail = openGameDetail,
         openFavoriteScreen = openFavoriteScreen,
     )
@@ -71,12 +77,14 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
-    homeState: HomeViewModel.HomeState = HomeViewModel.HomeState(),
+    gamePagingItems: LazyPagingItems<GamesResponse.Result>,
+    onTextChanged: (String) -> Unit = {},
     openGameDetail: (Int) -> Unit = {},
     openFavoriteScreen: () -> Unit = {},
 ) {
-    val snackScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var search by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -116,27 +124,57 @@ fun HomeScreenContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(bottom = 12.dp, top = 24.dp),
             ) {
-                if (homeState.games?.isNotEmpty() == true) {
-                    val games = homeState.games
-                    items(games.size) { index ->
-                        val gameDetail: GamesResponse.Result? = games[index]
-                        gameDetail?.let {
-                            ItemGame(gameDetail = it, openGameDetail = openGameDetail)
-                        }
+                item {
+                    SearchField(search) {
+                        search = it
+                        onTextChanged(it)
                     }
-                } else {
-                    items(5) {
-                        ItemGameShimmer()
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                items(gamePagingItems.itemCount) { index ->
+                    gamePagingItems[index]?.let {
+                        ItemGame(
+                            gameDetail = it,
+                            openGameDetail = { id ->
+                                openGameDetail(id)
+                            }
+                        )
                     }
                 }
-            }
+                gamePagingItems.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            items(5) { ItemGameShimmer() }
+                        }
 
-            if (homeState.error == true) {
-                LaunchedEffect(snackbarHostState) {
-                    snackScope.launch {
-                        snackbarHostState.showSnackbar(
-                            homeState.message ?: "Gagal memuat data"
-                        )
+                        loadState.refresh is LoadState.Error -> {
+                            val error = gamePagingItems.loadState.refresh as LoadState.Error
+                            Log.d("HomeScreen", "error: ${error.error.localizedMessage}")
+                            item {
+                                ErrorMessage(
+                                    modifier = Modifier.fillParentMaxSize(),
+                                    message = "error, try again",
+                                    onClickRetry = { retry() },
+                                )
+                            }
+                        }
+
+                        loadState.append is LoadState.Loading -> {
+                            item { ItemGameShimmer() }
+                        }
+
+                        loadState.append is LoadState.Error -> {
+                            val error = gamePagingItems.loadState.append as LoadState.Error
+                            item {
+                                ErrorMessage(
+                                    modifier = Modifier,
+                                    message = error.error.localizedMessage ?: "error",
+                                    onClickRetry = { retry() },
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -247,31 +285,76 @@ fun ItemGameShimmer(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun SearchField(
+    text: String,
+    onTextChanged: (String) -> Unit,
+) {
+    CustomOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth(),
+        text = text,
+        onValueChanged = {
+            onTextChanged(it)
+        },
+        placeholder = {
+            Text(
+                text = "Search Games",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        },
+    )
+}
+
+@Composable
+fun ErrorMessage(
+    message: String,
+    modifier: Modifier = Modifier,
+    onClickRetry: () -> Unit
+) {
+    Row(
+        modifier = modifier.padding(10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.weight(1f),
+            maxLines = 2
+        )
+        OutlinedButton(onClick = onClickRetry) {
+            Text(text = "Retry")
+        }
+    }
+}
+
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
     GamekuTheme {
         Surface {
-            HomeScreenContent(
-                homeState = HomeViewModel.HomeState(
-                    games = listOf(
-                        GamesResponse.Result(
-                            name = "Namanamanama", released = "23-09-2019",
-                            genres = listOf(
-                                GamesResponse.Result.Genre(name = "RPG"),
-                                GamesResponse.Result.Genre(name = "Action"),
-                            ),
-                        ),
+            val listGames = listOf(
+                GamesResponse.Result(
+                    name = "Namanamanama", released = "23-09-2019",
+                    genres = listOf(
+                        GamesResponse.Result.Genre(name = "RPG"),
+                        GamesResponse.Result.Genre(name = "Action"),
+                    ),
+                ),
 
-                        GamesResponse.Result(
-                            name = "asdasdasdasdsad", released = "23-09-2019",
-                            genres = listOf(
-                                GamesResponse.Result.Genre(name = "RPG"),
-                                GamesResponse.Result.Genre(name = "Action"),
-                            ),
-                        ),
-                    )
-                )
+                GamesResponse.Result(
+                    name = "asdasdasdasdsad", released = "23-09-2019",
+                    genres = listOf(
+                        GamesResponse.Result.Genre(name = "RPG"),
+                        GamesResponse.Result.Genre(name = "Action"),
+                    ),
+                ),
+            )
+
+            HomeScreenContent(
+                gamePagingItems = flowOf(PagingData.from(listGames)).collectAsLazyPagingItems()
             )
         }
     }

@@ -1,10 +1,14 @@
 package com.naufal.gameku.data.game
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.naufal.gameku.data.common.AppResult
 import com.naufal.gameku.data.common.errorBody
 import com.naufal.gameku.data.game.model.entity.GameEntity
 import com.naufal.gameku.data.game.model.response.GameDetailResponse
 import com.naufal.gameku.data.game.model.response.GamesResponse
+import com.naufal.gameku.data.game.paging.GamePagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,26 +19,13 @@ class GameRepository @Inject constructor(
     private val gameService: GameService,
     private val gameDatabase: GameDatabase,
 ) {
-    suspend fun getGames(search: String = "", page: Int = 1): AppResult<Flow<GamesResponse?>> {
-        val response = gameService.getGames(search = search, page = page)
-
-        if (response.isSuccessful) {
-            val result = response.body()
-            return AppResult.OnSuccess(
-                flow {
-                    emit(result)
-                }.flowOn(Dispatchers.IO)
-            )
-        } else {
-            val errorBody =
-                errorBody<GamesResponse>(
-                    response.body()?.toString()
-                )
-            return AppResult.OnFailure(
-                flow { emit(errorBody) }.flowOn(Dispatchers.IO),
-                response.code(),
-            )
-        }
+    suspend fun getGames(search: String = ""): Flow<PagingData<GamesResponse.Result>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 2),
+            pagingSourceFactory = {
+                GamePagingSource(search, gameService)
+            }
+        ).flow
     }
 
     suspend fun getGameDetail(gameId: Int): AppResult<Flow<GameDetailResponse?>> {

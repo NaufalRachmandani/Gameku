@@ -10,15 +10,15 @@ import retrofit2.http.Query
 interface GameService {
     @GET("games")
     suspend fun getGames(
-        @Query("key") key: String = "api key",
+        @Query("key") key: String = "",
         @Query("page_size") pageSize: Int = 10,
         @Query("page") page: Int = 1,
         @Query("search") search: String = "",
-    ): Response<GamesResponse>
+    ): GamesResponse
 
     @GET("games/{gameId}")
     suspend fun getGameDetail(
-        @Query("key") key: String = "api key",
+        @Query("key") key: String = "",
         @Path("gameId") gameId: Int?,
     ): Response<GameDetailResponse>
 }

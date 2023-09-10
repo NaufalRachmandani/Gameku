@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.get
+import com.naufal.gameku.ui.features.favorite.FavoriteGameScreen
 
 @Composable
 fun GamekuGraph(navController: NavHostController) {
@@ -21,8 +22,11 @@ fun GamekuGraph(navController: NavHostController) {
     ) {
         composable(Screen.Home.route) {
             HomeScreen(
-                openGameDetail = {
+                openGameDetailScreen = {
                     navController.navigate(Screen.GameDetail.createRoute(it))
+                },
+                openFavoriteScreen = {
+                    navController.navigate(Screen.Favorite.route)
                 }
             )
         }
@@ -37,6 +41,17 @@ fun GamekuGraph(navController: NavHostController) {
                 }
             )
         }
+
+        composable(Screen.Favorite.route) {
+            FavoriteGameScreen(
+                openGameDetailScreen = {
+                    navController.navigate(Screen.GameDetail.createRoute(it))
+                },
+                openHomeScreen = {
+                    navController.navigateUp()
+                }
+            )
+        }
     }
 }
 
@@ -45,6 +60,7 @@ sealed class Screen(val route: String) {
     object GameDetail : Screen("game_detail/{gameId}") {
         fun createRoute(gameId: Int) = "game_detail/$gameId"
     }
+
     object Favorite : Screen("favorite")
 }
 

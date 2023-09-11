@@ -1,4 +1,4 @@
-package com.naufal.gameku.data.game.model.response
+package com.naufal.gameku.data.game.remote.model
 
 import com.google.gson.annotations.SerializedName
 

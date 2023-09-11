@@ -1,9 +1,9 @@
-package com.naufal.gameku.data.game.paging
+package com.naufal.gameku.data.game.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.naufal.gameku.data.game.GameService
-import com.naufal.gameku.data.game.model.response.GamesResponse
+import com.naufal.gameku.data.game.remote.GameService
+import com.naufal.gameku.data.game.remote.model.GamesResponse
 import retrofit2.HttpException
 import java.io.IOException
 

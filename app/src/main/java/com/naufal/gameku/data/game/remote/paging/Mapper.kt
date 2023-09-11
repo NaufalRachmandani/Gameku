@@ -1,6 +1,6 @@
-package com.naufal.gameku.data.game.paging
+package com.naufal.gameku.data.game.remote.paging
 
-import com.naufal.gameku.data.game.model.response.GamesResponse
+import com.naufal.gameku.data.game.remote.model.GamesResponse
 
 fun List<GamesResponse.Result?>?.toGamesList(): List<GamesResponse.Result> {
     val gamesList = mutableListOf<GamesResponse.Result>()

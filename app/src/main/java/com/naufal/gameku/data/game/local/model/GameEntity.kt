@@ -1,4 +1,4 @@
-package com.naufal.gameku.data.game.model.entity
+package com.naufal.gameku.data.game.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

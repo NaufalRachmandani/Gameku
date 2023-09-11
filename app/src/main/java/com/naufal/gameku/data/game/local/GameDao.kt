@@ -1,10 +1,10 @@
-package com.naufal.gameku.data.game
+package com.naufal.gameku.data.game.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.naufal.gameku.data.game.model.entity.GameEntity
+import com.naufal.gameku.data.game.local.model.GameEntity
 
 @Dao
 interface GameDao {

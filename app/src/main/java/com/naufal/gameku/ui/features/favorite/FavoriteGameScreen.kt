@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import com.naufal.gameku.data.game.model.entity.GameEntity
+import com.naufal.gameku.data.game.local.model.GameEntity
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.theme.GamekuTheme

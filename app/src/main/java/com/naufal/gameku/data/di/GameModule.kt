@@ -2,9 +2,12 @@ package com.naufal.gameku.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.naufal.gameku.data.game.GameDatabase
-import com.naufal.gameku.data.game.GameRepository
-import com.naufal.gameku.data.game.GameService
+import com.naufal.gameku.data.game.local.GameDatabase
+import com.naufal.gameku.data.game.GameRepositoryImpl
+import com.naufal.gameku.data.game.local.GameLocalDataSource
+import com.naufal.gameku.data.game.remote.GameRemoteDataSource
+import com.naufal.gameku.data.game.remote.GameService
+import com.naufal.gameku.domain.GameRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,10 +35,24 @@ object GameModule {
     }
 
     @Provides
-    fun provideGameRepository(
+    fun provideGameLocalDataSource(
+        gameDatabase: GameDatabase,
+    ): GameLocalDataSource {
+        return GameLocalDataSource(gameDatabase)
+    }
+
+    @Provides
+    fun provideGameRemoteDataSource(
         gameService: GameService,
-        gameDatabase: GameDatabase
+    ): GameRemoteDataSource {
+        return GameRemoteDataSource(gameService)
+    }
+
+    @Provides
+    fun provideGameRepository(
+        gameRemoteDataSource: GameRemoteDataSource,
+        gameLocalDataSource: GameLocalDataSource,
     ): GameRepository {
-        return GameRepository(gameService, gameDatabase)
+        return GameRepositoryImpl(gameRemoteDataSource, gameLocalDataSource)
     }
 }

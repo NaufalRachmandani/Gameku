@@ -1,4 +1,4 @@
-package com.naufal.gameku.data
+package com.naufal.gameku.data.di
 
 import com.google.gson.GsonBuilder
 import dagger.Module

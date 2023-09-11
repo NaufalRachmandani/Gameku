@@ -3,8 +3,8 @@ package com.naufal.gameku.ui.features.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naufal.gameku.data.common.addOnResultListener
-import com.naufal.gameku.data.game.GameRepository
-import com.naufal.gameku.data.game.model.entity.GameEntity
+import com.naufal.gameku.data.game.GameRepositoryImpl
+import com.naufal.gameku.data.game.local.model.GameEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteGameViewModel @Inject constructor(
-    private val gameRepository: GameRepository
+    private val gameRepositoryImpl: GameRepositoryImpl
 ) : ViewModel() {
 
     private val _favoriteGameState = MutableStateFlow(FavoriteGameState())
@@ -25,7 +25,7 @@ class FavoriteGameViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _favoriteGameState.emit(FavoriteGameState(loading = true))
 
-            gameRepository.getFavoriteGames().addOnResultListener(
+            gameRepositoryImpl.getFavoriteGames().addOnResultListener(
                 onSuccess = {
                     it?.collectLatest { data ->
                         _favoriteGameState.emit(FavoriteGameState(games = data))

@@ -1,7 +1,7 @@
 package com.naufal.gameku.ui.util
 
-import com.naufal.gameku.data.game.model.response.GameDetailResponse
-import com.naufal.gameku.data.game.model.response.GamesResponse
+import com.naufal.gameku.data.game.remote.model.GameDetailResponse
+import com.naufal.gameku.data.game.remote.model.GamesResponse
 
 fun List<GamesResponse.Result.Genre?>?.gamesResponseToStringGenres(): String {
     val stringBuilder = StringBuilder()

@@ -45,7 +45,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.naufal.gameku.data.game.remote.model.GamesResponse
+import com.naufal.core.data.game.remote.model.GamesResponse
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.CustomOutlinedTextField
 import com.naufal.gameku.ui.components.shimmerEffect

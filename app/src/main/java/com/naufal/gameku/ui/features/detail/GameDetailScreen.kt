@@ -43,7 +43,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naufal.gameku.R
-import com.naufal.gameku.data.game.remote.model.GameDetailResponse
+import com.naufal.core.data.game.remote.model.GameDetailResponse
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.features.detail.GameDetailViewModel

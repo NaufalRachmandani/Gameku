@@ -6,6 +6,8 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+apply(from = "../shared_dependencies.gradle")
+
 android {
     namespace = "com.naufal.gameku"
     compileSdk = 34
@@ -52,10 +54,10 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation(project(":core"))
 
     // Lifecycle
-    val lifecycle_version = "2.6.1"
+    val lifecycle_version = "2.6.2"
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
@@ -65,28 +67,13 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("androidx.compose.material:material-icons-extended")
 
     //image
     implementation("com.github.skydoves:landscapist-coil:2.2.7")
 
-    //paging
-    val paging_version = "3.2.1"
-    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
-    implementation("androidx.paging:paging-compose:$paging_version")
-
-    //retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    // local storage: room
-    implementation("androidx.room:room-ktx:2.5.2")
-    ksp("androidx.room:room-compiler:2.5.2")
-
     // Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.44.2")
-    kapt("com.google.dagger:hilt-android-compiler:2.44.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     testImplementation("junit:junit:4.13.2")

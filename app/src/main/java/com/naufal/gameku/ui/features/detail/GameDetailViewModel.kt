@@ -2,11 +2,11 @@ package com.naufal.gameku.ui.features.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.naufal.gameku.data.common.addOnResultListener
-import com.naufal.gameku.data.game.GameRepositoryImpl
-import com.naufal.gameku.data.game.local.model.GameEntity
-import com.naufal.gameku.data.game.remote.model.GameDetailResponse
-import com.naufal.gameku.domain.game.use_case.GetGameDetailUseCase
+import com.naufal.core.data.common.addOnResultListener
+import com.naufal.core.data.game.GameRepositoryImpl
+import com.naufal.core.data.game.local.model.GameEntity
+import com.naufal.core.data.game.remote.model.GameDetailResponse
+import com.naufal.core.domain.game.use_case.GetGameDetailUseCase
 import com.naufal.gameku.ui.util.gameDetailResponseToStringGenres
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

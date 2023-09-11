@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Gameku"
 include(":app")
+include(":core")

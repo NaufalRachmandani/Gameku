@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.naufal.gameku.data.game.GameRepositoryImpl
-import com.naufal.gameku.data.game.remote.model.GamesResponse
+import com.naufal.core.data.game.GameRepositoryImpl
+import com.naufal.core.data.game.remote.model.GamesResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

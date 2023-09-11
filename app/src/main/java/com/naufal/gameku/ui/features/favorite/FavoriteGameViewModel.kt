@@ -2,9 +2,9 @@ package com.naufal.gameku.ui.features.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.naufal.gameku.data.common.addOnResultListener
-import com.naufal.gameku.data.game.GameRepositoryImpl
-import com.naufal.gameku.data.game.local.model.GameEntity
+import com.naufal.core.data.common.addOnResultListener
+import com.naufal.core.data.game.GameRepositoryImpl
+import com.naufal.core.data.game.local.model.GameEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,0 +1,12 @@
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+
+    //paging
+    def paging_version = "3.2.1"
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
+    implementation("androidx.paging:paging-compose:$paging_version")
+
+    // Dependency Injection
+    implementation("com.google.dagger:hilt-android:2.46.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.44.2")
+}

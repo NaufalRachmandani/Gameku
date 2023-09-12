@@ -1,5 +1,6 @@
 package com.naufal.gameku.ui.features.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naufal.core.data.common.addOnResultListener
@@ -11,6 +12,7 @@ import com.naufal.core.domain.game.use_case.GetGameDetailUseCase
 import com.naufal.core.domain.game.use_case.SaveFavoriteGameUseCase
 import com.naufal.gameku.ui.util.gameDetailToStringGenres
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +39,7 @@ class GameDetailViewModel @Inject constructor(
 
     fun getGameDetail(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
+
             _gameDetailState.emit(GameDetailState(loading = true))
 
             gameDetailUseCase(gameId).addOnResultListener(
@@ -57,6 +60,7 @@ class GameDetailViewModel @Inject constructor(
 
     fun checkFavoriteGame(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("GameDetailViewModel", "checkFavoriteGame: ")
             _favoriteGameState.emit(FavoriteGameState(loading = true))
 
             checkFavoriteGameUseCase(gameId).addOnResultListener(

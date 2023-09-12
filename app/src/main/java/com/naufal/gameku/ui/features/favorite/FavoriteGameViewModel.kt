@@ -28,7 +28,7 @@ class FavoriteGameViewModel @Inject constructor(
             getFavoriteGamesUseCase().addOnResultListener(
                 onSuccess = {
                     it?.collectLatest { data ->
-                        _favoriteGameState.emit(FavoriteGameState(games = data))
+                        _favoriteGameState.emit(FavoriteGameState(games = data, isEmpty = data.isEmpty()))
                     }
                 },
                 onFailure = { data, code, message ->
@@ -46,5 +46,6 @@ class FavoriteGameViewModel @Inject constructor(
         val error: Boolean? = null,
         val message: String? = null,
         val games: List<FavoriteGames>? = null,
+        val isEmpty: Boolean? = null,
     )
 }

@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.naufal.core.data.common.AppResult
-import com.naufal.core.data.game.remote.model.GamesResponse
 import com.naufal.core.data.game.remote.paging.GamePagingSource
 import com.naufal.core.domain.game.mapper.toGameDetail
 import com.naufal.core.domain.game.model.GameDetail
@@ -13,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class GameRemoteDataSource @Inject constructor(
@@ -28,19 +28,30 @@ class GameRemoteDataSource @Inject constructor(
     }
 
     suspend fun getGameDetail(gameId: Int): AppResult<Flow<GameDetail?>> {
-        val response = gameService.getGameDetail(gameId = gameId)
+        try {
+            val response = gameService.getGameDetail(gameId = gameId)
 
-        if (response.isSuccessful) {
-            val result = response.body()
-            return AppResult.OnSuccess(
-                flow {
-                    emit(result?.toGameDetail())
-                }.flowOn(Dispatchers.IO)
-            )
-        } else {
+            return if (response.isSuccessful) {
+                val result = response.body()
+                AppResult.OnSuccess(
+                    flow {
+                        emit(result?.toGameDetail())
+                    }.flowOn(Dispatchers.IO)
+                )
+            } else {
+                AppResult.OnFailure(
+                    code = response.code(),
+                    message = response.message()
+                )
+            }
+        } catch (e: HttpException) {
             return AppResult.OnFailure(
-                code = response.code(),
-                message = response.message()
+                code = e.code(),
+                message = e.message()
+            )
+        } catch (e: Throwable) {
+            return AppResult.OnError(
+                throwable = e
             )
         }
     }

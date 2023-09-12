@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -252,10 +253,37 @@ fun GameDetailScreenContent(
             }
 
             if (gameDetailState.error == true) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    IconButton(
+                        onClick = { openHomeScreen() },
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(6.dp),
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 10.dp),
+                    text = "Failed load data",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
                 LaunchedEffect(snackbarHostState) {
                     snackScope.launch {
                         snackbarHostState.showSnackbar(
-                            gameDetailState.message ?: "Failed load data"
+                            "Failed load data"
                         )
                     }
                 }

@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -133,8 +134,10 @@ fun FavoriteGameScreenContent(
                         }
                     }
                 } else {
-                    items(3) {
-                        ItemGameShimmer()
+                    if (favoriteGameState.isEmpty != true) {
+                        items(3) {
+                            ItemGameShimmer()
+                        }
                     }
                 }
             }
@@ -147,6 +150,17 @@ fun FavoriteGameScreenContent(
                         )
                     }
                 }
+            }
+
+            if (favoriteGameState.isEmpty == true) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 10.dp),
+                    text = "You dont have saved favorite games",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
         }
     }

@@ -2,8 +2,10 @@ package com.naufal.gameku.ui.util
 
 import com.naufal.core.data.game.remote.model.GameDetailResponse
 import com.naufal.core.data.game.remote.model.GamesResponse
+import com.naufal.core.domain.game.model.GameDetail
+import com.naufal.core.domain.game.model.Games
 
-fun List<GamesResponse.Result.Genre?>?.gamesResponseToStringGenres(): String {
+fun List<Games.Result.Genre?>?.gamesToStringGenres(): String {
     val stringBuilder = StringBuilder()
     if (this.isNullOrEmpty()) {
         stringBuilder.append("-")
@@ -19,7 +21,7 @@ fun List<GamesResponse.Result.Genre?>?.gamesResponseToStringGenres(): String {
     return stringBuilder.toString()
 }
 
-fun List<GameDetailResponse.Genre?>?.gameDetailResponseToStringGenres(): String {
+fun List<GameDetail.Genre?>?.gameDetailToStringGenres(): String {
     val stringBuilder = StringBuilder()
     if (this.isNullOrEmpty()) {
         stringBuilder.append("-")
@@ -35,7 +37,7 @@ fun List<GameDetailResponse.Genre?>?.gameDetailResponseToStringGenres(): String 
     return stringBuilder.toString()
 }
 
-fun List<GameDetailResponse.Developer?>?.toStringDevelopers(): String {
+fun List<GameDetail.Developer?>?.toStringDevelopers(): String {
     val stringBuilder = StringBuilder()
     if (this.isNullOrEmpty()) {
         stringBuilder.append("-")

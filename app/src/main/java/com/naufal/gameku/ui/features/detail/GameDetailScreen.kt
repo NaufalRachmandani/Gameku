@@ -43,12 +43,12 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naufal.gameku.R
-import com.naufal.core.data.game.remote.model.GameDetailResponse
+import com.naufal.core.domain.game.model.GameDetail
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.features.detail.GameDetailViewModel
 import com.naufal.gameku.ui.theme.GamekuTheme
-import com.naufal.gameku.ui.util.gameDetailResponseToStringGenres
+import com.naufal.gameku.ui.util.gameDetailToStringGenres
 import com.naufal.gameku.ui.util.toStringDevelopers
 import com.skydoves.landscapist.ImageOptions
 import kotlinx.coroutines.launch
@@ -93,8 +93,8 @@ fun GameDetailScreenContent(
     favoriteGameState: GameDetailViewModel.FavoriteGameState = GameDetailViewModel.FavoriteGameState(),
     saveFavoriteGameState: GameDetailViewModel.SaveFavoriteGameState = GameDetailViewModel.SaveFavoriteGameState(),
     openHomeScreen: () -> Unit = {},
-    onFavClick: (GameDetailResponse) -> Unit = {},
-    onUnFavClick: (GameDetailResponse) -> Unit = {},
+    onFavClick: (GameDetail) -> Unit = {},
+    onUnFavClick: (GameDetail) -> Unit = {},
 ) {
     val snackScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -209,7 +209,7 @@ fun GameDetailScreenContent(
 
                     Text(
                         modifier = Modifier.padding(horizontal = 10.dp),
-                        text = "Genres: ${gameDetail.genres.gameDetailResponseToStringGenres()}",
+                        text = "Genres: ${gameDetail.genres.gameDetailToStringGenres()}",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
@@ -438,16 +438,16 @@ fun GameDetailScreenPreview() {
         Surface {
             GameDetailScreenContent(
                 gameDetailState = GameDetailViewModel.GameDetailState(
-                    gameDetail = GameDetailResponse(
+                    gameDetail = GameDetail(
                         name = "Namanamanama", released = "23-09-2019",
                         genres = listOf(
-                            GameDetailResponse.Genre(name = "RPG"),
-                            GameDetailResponse.Genre(name = "Action"),
+                            GameDetail.Genre(name = "RPG"),
+                            GameDetail.Genre(name = "Action"),
                         ),
                         description = "asdsadsad",
                         developers = listOf(
-                            GameDetailResponse.Developer(name = "Ubisoft"),
-                            GameDetailResponse.Developer(name = "Toge"),
+                            GameDetail.Developer(name = "Ubisoft"),
+                            GameDetail.Developer(name = "Toge"),
                         ),
                     )
                 )

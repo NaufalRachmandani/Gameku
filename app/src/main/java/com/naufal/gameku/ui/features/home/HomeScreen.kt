@@ -45,13 +45,13 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.naufal.core.data.game.remote.model.GamesResponse
+import com.naufal.core.domain.game.model.Games
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.CustomOutlinedTextField
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.features.home.HomeViewModel
 import com.naufal.gameku.ui.theme.GamekuTheme
-import com.naufal.gameku.ui.util.gamesResponseToStringGenres
+import com.naufal.gameku.ui.util.gamesToStringGenres
 import com.skydoves.landscapist.ImageOptions
 import kotlinx.coroutines.flow.flowOf
 
@@ -61,7 +61,7 @@ fun HomeScreen(
     openGameDetailScreen: (Int) -> Unit = {},
     openFavoriteScreen: () -> Unit = {},
 ) {
-    val gamePagingItems: LazyPagingItems<GamesResponse.Result> =
+    val gamePagingItems: LazyPagingItems<Games.Result> =
         viewModel.gamesState.collectAsLazyPagingItems()
 
     HomeScreenContent(
@@ -77,7 +77,7 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
-    gamePagingItems: LazyPagingItems<GamesResponse.Result>,
+    gamePagingItems: LazyPagingItems<Games.Result>,
     onTextChanged: (String) -> Unit = {},
     openGameDetailScreen: (Int) -> Unit = {},
     openFavoriteScreen: () -> Unit = {},
@@ -129,7 +129,7 @@ fun HomeScreenContent(
                         search = it
                         onTextChanged(it)
                     }
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
@@ -185,7 +185,7 @@ fun HomeScreenContent(
 @Composable
 fun ItemGame(
     modifier: Modifier = Modifier,
-    gameDetail: GamesResponse.Result,
+    gameDetail: Games.Result,
     openGameDetailScreen: (Int) -> Unit = {},
 ) {
     Column(
@@ -227,7 +227,7 @@ fun ItemGame(
 
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
-            text = "Genres: ${gameDetail.genres.gamesResponseToStringGenres()}",
+            text = "Genres: ${gameDetail.genres.gamesToStringGenres()}",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -336,19 +336,19 @@ fun HomeScreenPreview() {
     GamekuTheme {
         Surface {
             val listGames = listOf(
-                GamesResponse.Result(
+                Games.Result(
                     name = "Namanamanama", released = "23-09-2019",
                     genres = listOf(
-                        GamesResponse.Result.Genre(name = "RPG"),
-                        GamesResponse.Result.Genre(name = "Action"),
+                        Games.Result.Genre(name = "RPG"),
+                        Games.Result.Genre(name = "Action"),
                     ),
                 ),
 
-                GamesResponse.Result(
+                Games.Result(
                     name = "asdasdasdasdsad", released = "23-09-2019",
                     genres = listOf(
-                        GamesResponse.Result.Genre(name = "RPG"),
-                        GamesResponse.Result.Genre(name = "Action"),
+                        Games.Result.Genre(name = "RPG"),
+                        Games.Result.Genre(name = "Action"),
                     ),
                 ),
             )

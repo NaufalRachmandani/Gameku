@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.naufal.core.data.common.addOnResultListener
 import com.naufal.core.data.game.GameRepositoryImpl
 import com.naufal.core.data.game.local.model.GameEntity
-import com.naufal.core.data.game.remote.model.GameDetailResponse
+import com.naufal.core.domain.game.model.GameDetail
 import com.naufal.core.domain.game.use_case.GetGameDetailUseCase
-import com.naufal.gameku.ui.util.gameDetailResponseToStringGenres
+import com.naufal.gameku.ui.util.gameDetailToStringGenres
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +71,7 @@ class GameDetailViewModel @Inject constructor(
         }
     }
 
-    fun saveFavoriteGame(gameDetail: GameDetailResponse) {
+    fun saveFavoriteGame(gameDetail: GameDetail) {
         viewModelScope.launch(Dispatchers.IO) {
             _saveFavoriteGameState.emit(SaveFavoriteGameState(loading = true))
 
@@ -81,7 +81,7 @@ class GameDetailViewModel @Inject constructor(
                     name = gameDetail.name,
                     released = gameDetail.released,
                     backgroundImage = gameDetail.backgroundImage,
-                    genres = gameDetail.genres.gameDetailResponseToStringGenres(),
+                    genres = gameDetail.genres.gameDetailToStringGenres(),
                 )
             ).addOnResultListener(
                 onSuccess = {
@@ -125,7 +125,7 @@ class GameDetailViewModel @Inject constructor(
         val loading: Boolean? = null,
         val error: Boolean? = null,
         val message: String? = null,
-        val gameDetail: GameDetailResponse? = null,
+        val gameDetail: GameDetail? = null,
     )
 
     data class FavoriteGameState(

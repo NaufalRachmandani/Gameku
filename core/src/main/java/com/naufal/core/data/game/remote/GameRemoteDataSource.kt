@@ -4,10 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.naufal.core.data.common.AppResult
-import com.naufal.core.data.common.errorBody
-import com.naufal.core.data.game.remote.model.GameDetailResponse
 import com.naufal.core.data.game.remote.model.GamesResponse
 import com.naufal.core.data.game.remote.paging.GamePagingSource
+import com.naufal.core.domain.game.mapper.toGameDetail
+import com.naufal.core.domain.game.model.GameDetail
+import com.naufal.core.domain.game.model.Games
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class GameRemoteDataSource @Inject constructor(
     private val gameService: GameService
 ) {
-    fun getGames(search: String = ""): Flow<PagingData<GamesResponse.Result>> {
+    fun getGames(search: String = ""): Flow<PagingData<Games.Result>> {
         return Pager(
             config = PagingConfig(pageSize = 10, prefetchDistance = 2),
             pagingSourceFactory = {
@@ -26,24 +27,20 @@ class GameRemoteDataSource @Inject constructor(
         ).flow
     }
 
-    suspend fun getGameDetail(gameId: Int): AppResult<Flow<GameDetailResponse?>> {
+    suspend fun getGameDetail(gameId: Int): AppResult<Flow<GameDetail?>> {
         val response = gameService.getGameDetail(gameId = gameId)
 
         if (response.isSuccessful) {
             val result = response.body()
             return AppResult.OnSuccess(
                 flow {
-                    emit(result)
+                    emit(result?.toGameDetail())
                 }.flowOn(Dispatchers.IO)
             )
         } else {
-            val errorBody =
-                errorBody<GameDetailResponse>(
-                    response.body()?.toString()
-                )
             return AppResult.OnFailure(
-                flow { emit(errorBody) }.flowOn(Dispatchers.IO),
-                response.code(),
+                code = response.code(),
+                message = response.message()
             )
         }
     }

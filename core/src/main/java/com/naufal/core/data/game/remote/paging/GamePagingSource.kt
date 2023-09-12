@@ -3,15 +3,16 @@ package com.naufal.core.data.game.remote.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.naufal.core.data.game.remote.GameService
-import com.naufal.core.data.game.remote.model.GamesResponse
+import com.naufal.core.domain.game.mapper.toGamesList
+import com.naufal.core.domain.game.model.Games
 import retrofit2.HttpException
 import java.io.IOException
 
 class GamePagingSource(
     private val search: String,
     private val gameService: GameService
-) : PagingSource<Int, GamesResponse.Result>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GamesResponse.Result> {
+) : PagingSource<Int, Games.Result>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Games.Result> {
         return try {
             val currentPage = params.key ?: 1
             val games = gameService.getGames(
@@ -30,7 +31,7 @@ class GamePagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, GamesResponse.Result>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Games.Result>): Int? {
         return state.anchorPosition
     }
 }

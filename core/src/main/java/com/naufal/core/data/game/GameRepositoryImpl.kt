@@ -7,6 +7,7 @@ import com.naufal.core.data.game.local.model.GameEntity
 import com.naufal.core.data.game.remote.GameRemoteDataSource
 import com.naufal.core.data.game.remote.model.GamesResponse
 import com.naufal.core.domain.GameRepository
+import com.naufal.core.domain.game.model.FavoriteGames
 import com.naufal.core.domain.game.model.GameDetail
 import com.naufal.core.domain.game.model.Games
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ class GameRepositoryImpl @Inject constructor(
     override suspend fun getGameDetail(gameId: Int): AppResult<Flow<GameDetail?>> =
         gameRemoteDataSource.getGameDetail(gameId)
 
-    override suspend fun getFavoriteGames(): AppResult<Flow<List<GameEntity>?>> =
+    override suspend fun getFavoriteGames(): AppResult<Flow<List<FavoriteGames>>> =
         gameLocalDataSource.getFavoriteGames()
 
     override suspend fun checkFavoriteGame(gameId: Int): AppResult<Flow<Boolean>> =

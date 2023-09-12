@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import com.naufal.core.data.game.local.model.GameEntity
+import com.naufal.core.domain.game.model.FavoriteGames
 import com.naufal.gameku.ui.components.CustomCoilImage
 import com.naufal.gameku.ui.components.shimmerEffect
 import com.naufal.gameku.ui.theme.GamekuTheme
@@ -124,9 +124,12 @@ fun FavoriteGameScreenContent(
                 if (favoriteGameState.games?.isNotEmpty() == true) {
                     val games = favoriteGameState.games
                     items(games.size) { index ->
-                        val gameEntity: GameEntity = games[index]
-                        gameEntity.let {
-                            ItemGame(gameEntity = it, openGameDetailScreen = openGameDetailScreen)
+                        val favoriteGames: FavoriteGames = games[index]
+                        favoriteGames.let {
+                            ItemGame(
+                                favoriteGames = it,
+                                openGameDetailScreen = openGameDetailScreen
+                            )
                         }
                     }
                 } else {
@@ -152,7 +155,7 @@ fun FavoriteGameScreenContent(
 @Composable
 fun ItemGame(
     modifier: Modifier = Modifier,
-    gameEntity: GameEntity,
+    favoriteGames: FavoriteGames,
     openGameDetailScreen: (Int) -> Unit = {},
 ) {
     Column(
@@ -161,14 +164,14 @@ fun ItemGame(
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surface)
             .clickable {
-                gameEntity.id?.let { openGameDetailScreen(it) }
+                favoriteGames.id?.let { openGameDetailScreen(it) }
             },
     ) {
         CustomCoilImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
-            model = gameEntity.backgroundImage ?: "",
+            model = favoriteGames.backgroundImage ?: "",
             imageOptions = ImageOptions(contentScale = ContentScale.Crop),
         )
 
@@ -176,7 +179,7 @@ fun ItemGame(
 
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
-            text = gameEntity.name ?: "-",
+            text = favoriteGames.name ?: "-",
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -185,7 +188,7 @@ fun ItemGame(
 
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
-            text = "Release Date: ${gameEntity.released ?: "-"}",
+            text = "Release Date: ${favoriteGames.released ?: "-"}",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -194,7 +197,7 @@ fun ItemGame(
 
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
-            text = "Genres: ${gameEntity.genres}",
+            text = "Genres: ${favoriteGames.genres}",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )

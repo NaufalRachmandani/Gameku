@@ -3,10 +3,12 @@ package com.naufal.gameku.ui.features.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naufal.core.data.common.addOnResultListener
-import com.naufal.core.data.game.GameRepositoryImpl
 import com.naufal.core.data.game.local.model.GameEntity
 import com.naufal.core.domain.game.model.GameDetail
+import com.naufal.core.domain.game.use_case.CheckFavoriteGameUseCase
+import com.naufal.core.domain.game.use_case.DeleteFavoriteGameUseCase
 import com.naufal.core.domain.game.use_case.GetGameDetailUseCase
+import com.naufal.core.domain.game.use_case.SaveFavoriteGameUseCase
 import com.naufal.gameku.ui.util.gameDetailToStringGenres
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameDetailViewModel @Inject constructor(
-    private val gameRepositoryImpl: GameRepositoryImpl,
-    private val gameDetailUseCase: GetGameDetailUseCase
+    private val gameDetailUseCase: GetGameDetailUseCase,
+    private val checkFavoriteGameUseCase: CheckFavoriteGameUseCase,
+    private val saveFavoriteGameUseCase: SaveFavoriteGameUseCase,
+    private val deleteFavoriteGameUseCase: DeleteFavoriteGameUseCase,
 ) : ViewModel() {
 
     private val _gameDetailState = MutableStateFlow(GameDetailState())
@@ -55,7 +59,7 @@ class GameDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _favoriteGameState.emit(FavoriteGameState(loading = true))
 
-            gameRepositoryImpl.checkFavoriteGame(gameId).addOnResultListener(
+            checkFavoriteGameUseCase(gameId).addOnResultListener(
                 onSuccess = {
                     it?.collectLatest { data ->
                         _favoriteGameState.emit(FavoriteGameState(isFavorite = data))
@@ -75,7 +79,7 @@ class GameDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _saveFavoriteGameState.emit(SaveFavoriteGameState(loading = true))
 
-            gameRepositoryImpl.saveFavoriteGame(
+            saveFavoriteGameUseCase(
                 GameEntity(
                     id = gameDetail.id,
                     name = gameDetail.name,
@@ -104,7 +108,7 @@ class GameDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _saveFavoriteGameState.emit(SaveFavoriteGameState(loading = true))
 
-            gameRepositoryImpl.deleteFavoriteGame(gameId).addOnResultListener(
+            deleteFavoriteGameUseCase(gameId).addOnResultListener(
                 onSuccess = {
                     it?.collectLatest { data ->
                         _saveFavoriteGameState.emit(SaveFavoriteGameState(successUnFav = data))

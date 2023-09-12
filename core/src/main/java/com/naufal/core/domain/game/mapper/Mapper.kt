@@ -1,7 +1,9 @@
 package com.naufal.core.domain.game.mapper
 
+import com.naufal.core.data.game.local.model.GameEntity
 import com.naufal.core.data.game.remote.model.GameDetailResponse
 import com.naufal.core.data.game.remote.model.GamesResponse
+import com.naufal.core.domain.game.model.FavoriteGames
 import com.naufal.core.domain.game.model.GameDetail
 import com.naufal.core.domain.game.model.Games
 
@@ -60,4 +62,22 @@ fun GameDetailResponse.toGameDetail(): GameDetail {
         backgroundImage = backgroundImage,
         genres = genres.toGameDetailGenre()
     )
+}
+
+fun List<GameEntity>.toFavoriteGames(): List<FavoriteGames> {
+    val gamesList = mutableListOf<FavoriteGames>()
+
+    this.forEach { game ->
+        gamesList.add(
+            FavoriteGames(
+                id = game.id,
+                name = game.name,
+                released = game.released,
+                backgroundImage = game.backgroundImage,
+                genres = game.genres,
+            )
+        )
+    }
+
+    return gamesList.toList()
 }

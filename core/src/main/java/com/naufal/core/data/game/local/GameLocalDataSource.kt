@@ -2,6 +2,8 @@ package com.naufal.core.data.game.local
 
 import com.naufal.core.data.common.AppResult
 import com.naufal.core.data.game.local.model.GameEntity
+import com.naufal.core.domain.game.mapper.toFavoriteGames
+import com.naufal.core.domain.game.model.FavoriteGames
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,10 +13,12 @@ import javax.inject.Inject
 class GameLocalDataSource @Inject constructor(
     private val gameDatabase: GameDatabase,
 ) {
-    suspend fun getFavoriteGames(): AppResult<Flow<List<GameEntity>?>> {
+    suspend fun getFavoriteGames(): AppResult<Flow<List<FavoriteGames>>> {
         return try {
             AppResult.OnSuccess(
-                flow { emit(gameDatabase.gameDao().getGames()) }.flowOn(Dispatchers.IO)
+                flow { emit(gameDatabase.gameDao().getGames().toFavoriteGames()) }.flowOn(
+                    Dispatchers.IO
+                )
             )
         } catch (e: Exception) {
             AppResult.OnFailure(
